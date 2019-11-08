@@ -26,7 +26,7 @@ module.exports = function() {
 	var playing = false;
 	var targetList = [];
 	var rhythmWheelMesh, rhythmWheelMesh2, wireframeMesh, wireframeMesh2;
-	var tracks = [];
+	var tracks = [], tracks2 = [];
 	var rhythmCount = 0;
 	var scope;
 	var loop;
@@ -119,8 +119,10 @@ module.exports = function() {
 			
 			for (let i = 0; i < this.settings.rhythmWheel.tracks; i++) { // init empty beats
 				tracks.push([]);
+				tracks2.push([]);
 				for (let j = 0; j < this.settings.rhythmWheel.beats; j++) {
 					tracks[i].push(null);
+					tracks2[i].push(null);
 				}
 			}
 		},
@@ -141,12 +143,14 @@ module.exports = function() {
 			self.initEmptyTracks();
 			
 			if (typeof preset.beat[0] !== 'undefined') tracks = preset.beat;
+			if (typeof preset.beat[0] !== 'undefined') tracks2 = preset.beat;
 			
 			for (let track = 0; track < tracks.length; track++) {
 				
 				for (let beat = 0; beat < tracks[track].length; beat++) {
 					
-					if (tracks[track][beat]) this.setNoteOn(beat, track);
+					if (tracks[track][beat]) this.setNoteOn(rhythmWheelMesh, beat, track);
+					if (tracks2[track][beat]) this.setNoteOn(rhythmWheelMesh2, beat, track);
 				}
 			}
 
@@ -160,7 +164,6 @@ module.exports = function() {
 				
 				timeCursor.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
 				timeCursor2.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
-				//timeCursor.rotateOnAxis(new THREE.Vector3(-10, 0, 0), -2*Math.PI/scope.settings.rhythmWheel.beats);
 				
 				let beat = rhythmCount % scope.settings.rhythmWheel.beats;
 
@@ -169,6 +172,13 @@ module.exports = function() {
 					if (tracks[i]) { // an instrument added but no notes for that instrument in preset.beat[]
 						
 						if (tracks[i][beat] !== null) {
+							preset.instruments[i].start(time, 0);
+						}
+					}
+					
+					if (tracks2[i]) { // an instrument added but no notes for that instrument in preset.beat[]
+						
+						if (tracks2[i][beat] !== null) {
 							preset.instruments[i].start(time, 0);
 						}
 					}
@@ -207,7 +217,6 @@ module.exports = function() {
 			let materials = [translucentFaceMaterial, solidFaceMaterial];
 			rhythmWheelMesh = new THREE.Mesh(rhythmWheel, materials);
 			rhythmWheelMesh2 = new THREE.Mesh(rhythmWheel2, materials);
-			console.log(rhythmWheelMesh2);
 			
 			rhythmWheelMesh.position.x -= 7;
 			rhythmWheelMesh2.position.x += 7;
@@ -249,30 +258,30 @@ module.exports = function() {
 			});
 		},
 		
-		setNoteOn: function(beatIndex, trackIndex) {
+		setNoteOn: function(mesh, beatIndex, trackIndex) {
 			
 			let track = trackIndex + 1;
 			beatIndex = beatIndex % this.settings.rhythmWheel.beats;
 			let facesPerRow = this.settings.rhythmWheel.beats * 2;
 			let faceIndex = (facesPerRow * track - 1) - (beatIndex * 2);
 
-			this.setFaceColorByIndex(rhythmWheelMesh, faceIndex, distinctColors[trackIndex], 1);
-			this.setFaceColorByIndex(rhythmWheelMesh, faceIndex - 1, distinctColors[trackIndex], 1);
-			rhythmWheelMesh.geometry.faces[faceIndex].selected = true;
-			rhythmWheelMesh.geometry.faces[faceIndex - 1].selected = true;
+			this.setFaceColorByIndex(mesh, faceIndex, distinctColors[trackIndex], 1);
+			this.setFaceColorByIndex(mesh, faceIndex - 1, distinctColors[trackIndex], 1);
+			mesh.geometry.faces[faceIndex].selected = true;
+			mesh.geometry.faces[faceIndex - 1].selected = true;
 		},
 		
-		setNoteOff: function(beatIndex, trackIndex) {
+		setNoteOff: function(mesh, beatIndex, trackIndex) {
 			
 			let track = trackIndex + 1;
 			beatIndex = beatIndex % this.settings.rhythmWheel.beats;
 			let facesPerRow = this.settings.rhythmWheel.beats * 2;
 			let faceIndex = (facesPerRow * track - 1) - (beatIndex * 2);
 
-			this.setFaceColorByIndex(rhythmWheelMesh, faceIndex, distinctColors[trackIndex], 1);
-			this.setFaceColorByIndex(rhythmWheelMesh, faceIndex - 1, distinctColors[trackIndex], 1);
-			rhythmWheelMesh.geometry.faces[faceIndex].selected = false;
-			rhythmWheelMesh.geometry.faces[faceIndex - 1].selected = false;
+			this.setFaceColorByIndex(mesh, faceIndex, distinctColors[trackIndex], 1);
+			this.setFaceColorByIndex(mesh, faceIndex - 1, distinctColors[trackIndex], 1);
+			mesh.geometry.faces[faceIndex].selected = false;
+			mesh.geometry.faces[faceIndex - 1].selected = false;
 		},
 
 		enableControls: function() {
@@ -314,6 +323,7 @@ module.exports = function() {
 				wheelLengthInput.parentElement.parentElement.style.display = 'none';
 				preset = beats[presetSelector.value];
 				tracks = [];
+				tracks2 = [];
 				self.settings.rhythmWheel.tracks = preset.instruments.length;
 				self.settings.rhythmWheel.beats = preset.length;
 				self.reset();
@@ -323,7 +333,8 @@ module.exports = function() {
 				
 				presetSelector.selectedIndex = 0;
 				wheelLengthInput.parentElement.parentElement.style.display = 'block';
-				self.clearAllNotes();
+				self.clearAllNotes(rhythmWheelMesh);
+				self.clearAllNotes(rhythmWheelMesh2);
 				preset = beats['empty'];
 				preset.bpm = beats.instrumentSets[instrumentSelector.value].bpm
 				preset.instruments = beats.instrumentSets[instrumentSelector.value].instruments;
@@ -335,7 +346,8 @@ module.exports = function() {
 			let clearButton = document.querySelector('.clear-notes');
 			if (clearButton) clearButton.addEventListener('click', function() {
 				
-				self.clearAllNotes();
+				self.clearAllNotes(rhythmWheelMesh);
+				self.clearAllNotes(rhythmWheelMesh2);
 			});
 			
 			let inputSteppers = document.querySelectorAll('.input-stepper');
@@ -368,12 +380,13 @@ module.exports = function() {
 			});
 		},
 		
-		clearAllNotes: function() {
+		clearAllNotes: function(mesh) {
 			
 			let self = this;
 			self.reset();
 			preset.beats = [];
 			tracks = [];
+			tracks2 = [];
 			
 			self.initEmptyTracks();
 			
@@ -384,12 +397,11 @@ module.exports = function() {
 				for (let j = 0; j < self.settings.rhythmWheel.tracks; j++) {
 					
 					preset.beats[i].push(null);
-					self.setNoteOff(i, j);
+					self.setNoteOff(mesh, i, j);
 				}
 			}
 			
-			self.setEmptyFaceColors(rhythmWheelMesh);
-			self.setEmptyFaceColors(rhythmWheelMesh2);
+			self.setEmptyFaceColors(mesh);
 		},
 		
 		reset: function() {
@@ -406,7 +418,8 @@ module.exports = function() {
 			}
 			
 			self.addGeometries();
-			self.addLabels();
+			self.addLabels(rhythmWheelMesh);
+			self.addLabels(rhythmWheelMesh2);
 			self.setUpRhythm();
 			
 			let playToggle = document.querySelector('.play-toggle');
@@ -422,19 +435,22 @@ module.exports = function() {
 				track.push(null);
 			});
 			self.reset();
-			self.clearAllNotes();
+			self.clearAllNotes(rhythmWheelMesh);
+			self.clearAllNotes(rhythmWheelMesh2);
 		},
 		
 		decreaseWheel: function() {
 			
 			let self = this;
 			self.settings.rhythmWheel.beats -= 1;
-			self.clearAllNotes();
+			self.clearAllNotes(rhythmWheelMesh);
+			self.clearAllNotes(rhythmWheelMesh2);
 			preset.beat.forEach(function(track) {
 				track.pop(null);
 			});
 			self.reset();
-			self.clearAllNotes();
+			self.clearAllNotes(rhythmWheelMesh);
+			self.clearAllNotes(rhythmWheelMesh2);
 		},
 		
 		intersects: function(event) {
@@ -477,8 +493,16 @@ module.exports = function() {
 				mesh.geometry.faces[faceIndex - 1].selected = !mesh.geometry.faces[faceIndex - 1].selected;
 			}
 			
-			if (tracks[trackIndex][beatIndex] === null) tracks[trackIndex][beatIndex] = Object.keys(beats.allInstruments._players)[trackIndex]; // get an instrument for each track row
-			else tracks[trackIndex][beatIndex] = null;
+			if (mesh === rhythmWheelMesh) {
+				
+				if (tracks[trackIndex][beatIndex] === null) tracks[trackIndex][beatIndex] = Object.keys(beats.allInstruments._players)[trackIndex]; // get an instrument for each track row
+				else tracks[trackIndex][beatIndex] = null;
+			}
+			else if (mesh === rhythmWheelMesh2) {
+				
+				if (tracks2[trackIndex][beatIndex] === null) tracks2[trackIndex][beatIndex] = Object.keys(beats.allInstruments._players)[trackIndex]; // get an instrument for each track row
+				else tracks2[trackIndex][beatIndex] = null;
+			}
 		},
 		
 		setFaceColorByIndex: function(mesh, faceIndex, color, materialIndex) {
