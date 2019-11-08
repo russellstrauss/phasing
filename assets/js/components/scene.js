@@ -187,8 +187,10 @@ module.exports = function() {
 			rhythmWheel.rotateX(-Math.PI/2);
 			rhythmWheel.rotateY(Math.PI/2);
 			rhythmWheel.translate(0, this.settings.zBufferOffset, 0);
-			
-			console.log(rhythmWheel);
+			let rhythmWheel2 = new THREE.RingGeometry(self.settings.rhythmWheel.innerRadius, self.settings.rhythmWheel.outerRadius, self.settings.rhythmWheel.beats, self.settings.rhythmWheel.tracks);
+			rhythmWheel2.rotateX(-Math.PI/2);
+			rhythmWheel2.rotateY(Math.PI/2);
+			rhythmWheel2.translate(0, this.settings.zBufferOffset, 0);
 			
 			let solidFaceMaterial = new THREE.MeshBasicMaterial({
 				color: new THREE.Color('white'),
@@ -204,43 +206,43 @@ module.exports = function() {
 			
 			let materials = [translucentFaceMaterial, solidFaceMaterial];
 			rhythmWheelMesh = new THREE.Mesh(rhythmWheel, materials);
-			rhythmWheelMesh2 = new THREE.Mesh(rhythmWheel, materials);
+			rhythmWheelMesh2 = new THREE.Mesh(rhythmWheel2, materials);
+			console.log(rhythmWheelMesh2);
 			
 			rhythmWheelMesh.position.x -= 7;
 			rhythmWheelMesh2.position.x += 7;
-			self.setEmptyFaceColors();
+			self.setEmptyFaceColors(rhythmWheelMesh);
+			self.setEmptyFaceColors(rhythmWheelMesh2);
 			
 			wireframeMesh = new THREE.Mesh(rhythmWheel, wireframeMaterial);
-			wireframeMesh2 = new THREE.Mesh(rhythmWheel, wireframeMaterial);
+			wireframeMesh2 = new THREE.Mesh(rhythmWheel2, wireframeMaterial);
 			wireframeMesh.position.y += this.settings.zBufferOffset * 2;
 			wireframeMesh2.position.y += this.settings.zBufferOffset * 2;
 			wireframeMesh.position.x -= 7;
 			wireframeMesh2.position.x += 7;
 			targetList.push(rhythmWheelMesh);
+			targetList.push(rhythmWheelMesh2);
 			scene.add(rhythmWheelMesh);
 			scene.add(rhythmWheelMesh2);
 			scene.add(wireframeMesh);
 			scene.add(wireframeMesh2);
 			
 			var geometry = new THREE.BoxGeometry(0.1, 0.01, this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius);
-			//geometry.translate(-10, 1, 0);
-			//geometry.translate(0, 0.1/2, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
 			var material = new THREE.MeshBasicMaterial({color: black, transparent: true, opacity: 0.75});
 			timeCursor = new THREE.Mesh(geometry, material);
 			timeCursor2 = new THREE.Mesh(geometry, material);
 			
 			geometry.translate(0, .01, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
 			timeCursor.position.set(rhythmWheelMesh.position.x, this.settings.zBufferOffset * 2, 0);
-			
 			timeCursor2.position.set(rhythmWheelMesh2.position.x, this.settings.zBufferOffset * 2, 0);
 			scene.add(timeCursor);
 			scene.add(timeCursor2);
 		},
 		
-		setEmptyFaceColors: function() {
+		setEmptyFaceColors: function(mesh) {
 			
 			let self = this;
-			rhythmWheelMesh.geometry.faces.forEach(function (face, i) { // set default color tracks
+			mesh.geometry.faces.forEach(function (face, i) { // set default color tracks
 				let trackIndex = Math.floor(i / (self.settings.rhythmWheel.beats * 2));
 				face.materialIndex = 0;
 				face.color = distinctColors[trackIndex];
@@ -386,7 +388,8 @@ module.exports = function() {
 				}
 			}
 			
-			self.setEmptyFaceColors();
+			self.setEmptyFaceColors(rhythmWheelMesh);
+			self.setEmptyFaceColors(rhythmWheelMesh2);
 		},
 		
 		reset: function() {
@@ -443,17 +446,17 @@ module.exports = function() {
 			if (intersects.length > 0) {
 				
 				let faceIndex = intersects[0].faceIndex;
-				self.setUpFaceClicks(faceIndex);
+				self.setUpFaceClicks(faceIndex, intersects[0].object);
 			}
 		},
 		
-		setUpFaceClicks: function(faceIndex) {
+		setUpFaceClicks: function(faceIndex, mesh) {
 			
 			let beatIndex = (this.settings.rhythmWheel.beats - 1) - Math.floor(faceIndex / 2) % this.settings.rhythmWheel.beats;
 			let trackIndex = Math.floor(faceIndex / (this.settings.rhythmWheel.beats * 2));
 
 			let setMaterial = 1;
-			if (rhythmWheelMesh.geometry.faces[faceIndex].selected === true) {
+			if (mesh.geometry.faces[faceIndex].selected === true) {
 				setMaterial = 0;
 			}
 			else {
@@ -462,16 +465,16 @@ module.exports = function() {
 			
 			let evenFace = (faceIndex % 2 === 0);
 			if (evenFace) {
-				this.setFaceColorByIndex(rhythmWheelMesh, faceIndex, distinctColors[trackIndex], setMaterial);
-				this.setFaceColorByIndex(rhythmWheelMesh, faceIndex + 1, distinctColors[trackIndex], setMaterial);
-				rhythmWheelMesh.geometry.faces[faceIndex].selected = !rhythmWheelMesh.geometry.faces[faceIndex].selected;
-				rhythmWheelMesh.geometry.faces[faceIndex + 1].selected = !rhythmWheelMesh.geometry.faces[faceIndex + 1].selected;
+				this.setFaceColorByIndex(mesh, faceIndex, distinctColors[trackIndex], setMaterial);
+				this.setFaceColorByIndex(mesh, faceIndex + 1, distinctColors[trackIndex], setMaterial);
+				mesh.geometry.faces[faceIndex].selected = !mesh.geometry.faces[faceIndex].selected;
+				mesh.geometry.faces[faceIndex + 1].selected = !mesh.geometry.faces[faceIndex + 1].selected;
 			}
 			else {
-				this.setFaceColorByIndex(rhythmWheelMesh, faceIndex, distinctColors[trackIndex], setMaterial);
-				this.setFaceColorByIndex(rhythmWheelMesh, faceIndex - 1, distinctColors[trackIndex], setMaterial);
-				rhythmWheelMesh.geometry.faces[faceIndex].selected = !rhythmWheelMesh.geometry.faces[faceIndex].selected;
-				rhythmWheelMesh.geometry.faces[faceIndex - 1].selected = !rhythmWheelMesh.geometry.faces[faceIndex - 1].selected;
+				this.setFaceColorByIndex(mesh, faceIndex, distinctColors[trackIndex], setMaterial);
+				this.setFaceColorByIndex(mesh, faceIndex - 1, distinctColors[trackIndex], setMaterial);
+				mesh.geometry.faces[faceIndex].selected = !mesh.geometry.faces[faceIndex].selected;
+				mesh.geometry.faces[faceIndex - 1].selected = !mesh.geometry.faces[faceIndex - 1].selected;
 			}
 			
 			if (tracks[trackIndex][beatIndex] === null) tracks[trackIndex][beatIndex] = Object.keys(beats.allInstruments._players)[trackIndex]; // get an instrument for each track row
@@ -482,8 +485,8 @@ module.exports = function() {
 			mesh.geometry.faces[faceIndex].materialIndex = materialIndex;
 			mesh.geometry.faces[faceIndex].color.setRGB(color.r, color.g, color.b);
 			
-			rhythmWheelMesh.geometry.colorsNeedUpdate = true;
-			rhythmWheelMesh.geometry.groupsNeedUpdate = true;
+			mesh.geometry.colorsNeedUpdate = true;
+			mesh.geometry.groupsNeedUpdate = true;
 		},
 		
 		loadFont: function() {
