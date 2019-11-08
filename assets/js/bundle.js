@@ -369,6 +369,7 @@ module.exports = function () {
         triggerBeats(time, timeCursor2, tracks2);
       }, '16n');
       loop2.start(0);
+      loop2.playbackRate = .985;
       scope = self;
 
       function triggerBeats(time, timeCursor, tracks) {

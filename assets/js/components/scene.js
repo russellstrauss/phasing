@@ -167,6 +167,8 @@ module.exports = function() {
 			}, '16n');
 			loop2.start(0);
 			
+			loop2.playbackRate = .985;
+			
 			scope = self;
 			function triggerBeats(time, timeCursor, tracks) {
 				
