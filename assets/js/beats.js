@@ -85,7 +85,7 @@
 		player.get('cowbell'),
 		player.get('ride')
 	];
-	
+
 	//[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 	
 	window.beats = (function() {
@@ -145,8 +145,7 @@
 				beat: new Array(defaultInstruments.length),
 				length: 16,
 				bpm: 100,
-				instruments: defaultInstruments,
-				trackNames: ['kick', 'snare', 'hh', 'hho', 'tomLo', 'tomHi', 'cowbell', 'ride']
+				instruments: defaultInstruments
 			},
 			
 			basic: {
@@ -163,12 +162,6 @@
 					player.get('snare'),
 					player.get('hh'),
 					player.get('hho')
-				],
-				trackNames: [
-					'kick',
-					'snare',
-					'hh',
-					'hho'
 				]
 			},
 			
@@ -184,11 +177,6 @@
 					player.get('ride'),
 					player.get('kick'),
 					player.get('clave')
-				],
-				trackNames: [
-					'ride',
-					'kick',
-					'clave'
 				]
 			},
 			
@@ -208,13 +196,6 @@
 					player.get('hh'),
 					player.get('hho'),
 					player.get('cowbell')
-				],
-				trackNames: [
-					'kick',
-					'snare',
-					'hh',
-					'hho',
-					'cowbell'
 				]
 			},
 			
@@ -266,14 +247,6 @@
 					player.get('tomHi'),
 					player.get('kick'),
 					player.get('rim')
-				],
-				trackNames: [
-					'ride',
-					'hh',
-					'tomLo',
-					'tomHi',
-					'kick',
-					'rim'
 				]
 			},
 			
@@ -293,13 +266,6 @@
 					player.get('kick'),
 					player.get('tomLo'),
 					player.get('tomHi')
-				],
-				trackNames: [
-					'ride',
-					'hh',
-					'kick',
-					'tomLo',
-					'tomHi'
 				]
 			},
 			
@@ -321,14 +287,6 @@
 					player.get('tomLo'),
 					player.get('tomHi'),
 					player.get('rim')
-				],
-				trackNames: [
-					'ride',
-					'hh',
-					'kick',
-					'tomLo',
-					'tomHi',
-					'rim'
 				]
 			},
 			
@@ -359,11 +317,6 @@
 					player.get('kick'),
 					player.get('rim'),
 					player.get('ride')
-				],
-				trackNames: [
-					'kick',
-					'rim',
-					'ride'
 				]
 			},
 			
@@ -379,11 +332,6 @@
 					player.get('kick'),
 					player.get('rim'),
 					player.get('bellHi')
-				],
-				trackNames: [
-					'kick',
-					'rim',
-					'bellHi'
 				]
 			},
 			
@@ -399,11 +347,6 @@
 					player.get('kick'),
 					player.get('rim'),
 					player.get('bellHi')
-				],
-				trackNames: [
-					'kick',
-					'rim',
-					'bellHi'
 				]
 			},
 			
@@ -419,11 +362,6 @@
 					player.get('kick'),
 					player.get('rim'),
 					player.get('bellHi')
-				],
-				trackNames: [
-					'kick',
-					'rim',
-					'bellHi'
 				]
 			}//,
 			

@@ -27,17 +27,9 @@ module.exports = function() {
 	var targetList = [];
 	var rhythmWheelMesh, wireframeMesh;
 	var tracks = [];
-	var melodies = [];
 	var rhythmCount = 0;
 	var scope;
 	var loop;
-
-	var generateMelody = true;
-	var chordProgression = [1, 4, 3, 6, 2, 5];
-	var chordProgressIdx = 0;
-	var chord = 1;
-	var nextChord;
-	var insertChord = false;
 
 	var preset = beats.empty;
 	
@@ -46,7 +38,7 @@ module.exports = function() {
 		settings: {
 			defaultCameraLocation: {
 				x: 0,
-				y: 10,
+				y: 12,
 				z: 0
 			},
 			axesHelper: {
@@ -126,10 +118,8 @@ module.exports = function() {
 			
 			for (let i = 0; i < this.settings.rhythmWheel.tracks; i++) { // init empty beats
 				tracks.push([]);
-				melodies.push([]);
 				for (let j = 0; j < this.settings.rhythmWheel.beats; j++) {
 					tracks[i].push(null);
-					melodies[i].push(null);
 				}
 			}
 		},
@@ -150,24 +140,17 @@ module.exports = function() {
 			self.initEmptyTracks();
 			
 			if (typeof preset.beat[0] !== 'undefined') tracks = preset.beat;
-
-		
+			
 			for (let track = 0; track < tracks.length; track++) {
 				
 				for (let beat = 0; beat < tracks[track].length; beat++) {
 					
 					if (tracks[track][beat]) this.setNoteOn(beat, track);
 				}
-				console.log(preset.trackNames[track]);
-				this.convertBeatsToMelody(track);
 			}
 
 			loop = new Tone.Loop(function(time) {
-				if (generateMelody) {
-					triggerMelodies(time);
-				}
 				triggerBeats(time);
-				updateChord();
 			}, '16n');
 			loop.start(0);
 			
@@ -175,6 +158,7 @@ module.exports = function() {
 			function triggerBeats(time) {
 				
 				timeCursor.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
+				//timeCursor.rotateOnAxis(new THREE.Vector3(-10, 0, 0), -2*Math.PI/scope.settings.rhythmWheel.beats);
 				
 				let beat = rhythmCount % scope.settings.rhythmWheel.beats;
 
@@ -188,61 +172,6 @@ module.exports = function() {
 					}
 				}
 				rhythmCount++;
-			};
-
-			function triggerMelodies(time) {
-				let beat = rhythmCount % scope.settings.rhythmWheel.beats;
-				for (let i = 0; i < scope.settings.rhythmWheel.tracks; i++) {
-					
-					if (melodies[i]) {
-						let trackName = preset.trackNames[i];
-						let noteInfo = melodies[i][beat];
-						
-						if (noteInfo !== null) {
-							let keys = melody.chords[chord];
-							let note = keys[noteInfo.relativePitch] + noteInfo.octave;
-							melody.convertInstruments[trackName].triggerAttackRelease(note, noteInfo.duration, time);
-						}
-					}
-				}
-			};
-
-			function updateChord() {
-				if (rhythmCount % 16 == 0) {
-					chord = chordProgression[chordProgressIdx];
-					if (insertChord) {
-						chord = nextChord;
-						insertChord = false;
-						chordProgressIdx++;
-					}
-					console.log("chord progress", chord);
-
-					let r = Math.random();
-					if (chordProgressIdx == 1 && r < 0.6) {
-						insertChord = true;
-						nextChord = 5;
-					}
-					else if (chordProgressIdx == 2 && r < 0.6) {
-						insertChord = true;
-						nextChord = 1;
-					}
-					else if (chordProgressIdx == 3 && r < 0.4) {
-						insertChord = true;
-						nextChord = 4;
-					}
-					else if (chordProgressIdx == 5 && r < 0.4) {
-						insertChord = true;
-						nextChord = 3;
-					}
-
-					if (!insertChord) {
-						chordProgressIdx++;
-					}
-				
-					if (chordProgressIdx >= chordProgression.length) {
-						chordProgressIdx = 0;
-					}
-				}
 			}
 		},
 		
@@ -256,6 +185,8 @@ module.exports = function() {
 			rhythmWheel.rotateX(-Math.PI/2);
 			rhythmWheel.rotateY(Math.PI/2);
 			rhythmWheel.translate(0, this.settings.zBufferOffset, 0);
+			
+			console.log(rhythmWheel);
 			
 			let solidFaceMaterial = new THREE.MeshBasicMaterial({
 				color: new THREE.Color('white'),
@@ -271,18 +202,23 @@ module.exports = function() {
 			
 			let materials = [translucentFaceMaterial, solidFaceMaterial];
 			rhythmWheelMesh = new THREE.Mesh(rhythmWheel, materials);
+			
+			rhythmWheelMesh.position.x -= 10;
+			console.log(rhythmWheelMesh.position);
 			self.setEmptyFaceColors();
 			
 			wireframeMesh = new THREE.Mesh(rhythmWheel, wireframeMaterial);
 			wireframeMesh.position.y += this.settings.zBufferOffset * 2;
+			wireframeMesh.position.x -= 10;
 			targetList.push(rhythmWheelMesh);
 			scene.add(rhythmWheelMesh);
 			scene.add(wireframeMesh);
 			
 			var geometry = new THREE.BoxGeometry(0.1, 0.01, this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius);
-			geometry.translate(0, 0.1/2, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
+			//geometry.translate(0, 0.1/2, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
 			var material = new THREE.MeshBasicMaterial({color: black, transparent: true, opacity: 0.75});
 			timeCursor = new THREE.Mesh(geometry, material);
+			timeCursor.position.set(-10, 0.1/2, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
 			scene.add(timeCursor);
 		},
 		
@@ -356,61 +292,27 @@ module.exports = function() {
 			let presetSelector = document.querySelector('.presets');
 			
 			if (presetSelector) presetSelector.addEventListener('change', function() {
-				generateMelody = true;
+				
 				instrumentSelector.selectedIndex = 0;
 				wheelLengthInput.parentElement.parentElement.style.display = 'none';
 				preset = beats[presetSelector.value];
-				console.log("select preset", preset);
 				tracks = [];
 				self.settings.rhythmWheel.tracks = preset.instruments.length;
 				self.settings.rhythmWheel.beats = preset.length;
 				self.reset();
-				console.log(preset);
-				console.log(beats);
 			});
 			
 			if (instrumentSelector) instrumentSelector.addEventListener('change', function() {
-				generateMelody = false; // TODO there will be bugs, just disable melody generation for now
+				
 				presetSelector.selectedIndex = 0;
 				wheelLengthInput.parentElement.parentElement.style.display = 'block';
 				self.clearAllNotes();
 				preset = beats['empty'];
-				preset.bpm = beats.instrumentSets[instrumentSelector.value].bpm;
+				preset.bpm = beats.instrumentSets[instrumentSelector.value].bpm
 				preset.instruments = beats.instrumentSets[instrumentSelector.value].instruments;
 				self.settings.rhythmWheel.tracks = beats.instrumentSets[instrumentSelector.value].instruments.length;
 				self.settings.rhythmWheel.beats = beats.instrumentSets[instrumentSelector.value].length;
 				self.reset();
-				console.log(preset);
-				console.log(beats);
-			});
-
-			let rules1 = document.querySelector('.rules1');
-			let trackName;
-			if (rules1) rules1.addEventListener('change', function() {
-				trackName = preset.trackNames[0];
-				melody.convertPatterns[trackName] = rules1.value;
-				self.convertBeatsToMelody(0);
-			});
-
-			let rules2 = document.querySelector('.rules2');
-			if (rules2) rules2.addEventListener('change', function() {
-				trackName = preset.trackNames[1];
-				melody.convertPatterns[trackName] = rules2.value;
-				self.convertBeatsToMelody(1);
-			});
-
-			let rules3 = document.querySelector('.rules3');
-			if (rules3) rules3.addEventListener('change', function() {
-				trackName = preset.trackNames[2];
-				melody.convertPatterns[trackName] = rules3.value;
-				self.convertBeatsToMelody(2);
-			});
-
-			let rules4 = document.querySelector('.rules4');
-			if (rules4) rules4.addEventListener('change', function() {
-				trackName = preset.trackNames[3];
-				melody.convertPatterns[trackName] = rules4.value;
-				self.convertBeatsToMelody(3);
 			});
 			
 			let clearButton = document.querySelector('.clear-notes');
@@ -455,19 +357,16 @@ module.exports = function() {
 			self.reset();
 			preset.beats = [];
 			tracks = [];
-			melodies = [];
 			
 			self.initEmptyTracks();
 			
 			for (let i = 0; i < self.settings.rhythmWheel.beats; i++) {
 				
 				preset.beats.push([]);
-				melodies.push([]);
 				
 				for (let j = 0; j < self.settings.rhythmWheel.tracks; j++) {
 					
 					preset.beats[i].push(null);
-					melodies[i].push(null);
 					self.setNoteOff(i, j);
 				}
 			}
@@ -561,18 +460,7 @@ module.exports = function() {
 			}
 			
 			if (tracks[trackIndex][beatIndex] === null) tracks[trackIndex][beatIndex] = Object.keys(beats.allInstruments._players)[trackIndex]; // get an instrument for each track row
-			//if (tracks[trackIndex][beatIndex] === null) tracks[trackIndex][beatIndex] = preset.instruments[trackIndex];
 			else tracks[trackIndex][beatIndex] = null;
-
-			this.convertBeatsToMelody(trackIndex);
-		},
-
-		convertBeatsToMelody: function(trackIndex) {
-			if(!preset) return;
-			let trackName = preset.trackNames[trackIndex];
-			if (!trackName) return;
-			var convertedTrack = melody.convertRules[melody.convertPatterns[trackName]](tracks[trackIndex]); // call rule function
-			melodies[trackIndex] = convertedTrack;
 		},
 		
 		setFaceColorByIndex: function(mesh, faceIndex, color, materialIndex) {
@@ -641,6 +529,7 @@ module.exports = function() {
 			
 			let self = this;
 			let transform = new THREE.Vector3(0, 0, -this.settings.rhythmWheel.outerRadius);
+			let wheelCenter = new THREE.Vector3(rhythmWheelMesh.position.x, rhythmWheelMesh.position.y, rhythmWheelMesh.position.z);
 			
 			let instrumentNames = document.querySelector('.instrument-names');
 			instrumentNames.innerHTML = '';
@@ -663,7 +552,7 @@ module.exports = function() {
 				let labelPoint;
 				if (i % 2 === 1) {
 					result.setLength(result.length() * (1 + self.settings.font.fontStyle.size / 4));
-					labelPoint = gfx.movePoint(new THREE.Vector3(0, 0, 0), result);
+					labelPoint = gfx.movePoint(wheelCenter, result);
 					if (self.settings.rhythmWheel.beats < 32) {
 						
 						self.labelPoint(labelPoint, Math.floor((i + 2)/2).toString(), scene, black);
@@ -674,7 +563,7 @@ module.exports = function() {
 				}
 				else if (self.settings.rhythmWheel.beats <= 31) {
 					result.setLength(result.length() * (1 + self.settings.font.fontStyle.size / 8));
-					labelPoint = gfx.movePoint(new THREE.Vector3(0, 0, 0), result);
+					labelPoint = gfx.movePoint(wheelCenter, result);
 					self.labelPoint(labelPoint, '&', scene, black, self.settings.smallFont);
 				}
 			}
