@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Rhythm Sequencer</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/sass/main.css">
+	
+</head>
+<body>
+	
+	<div class="play-selection">
+		
+		<select class="instrument-selection">
+			<option value="" disabled selected>Load Instrument Set</option>
+			<option value="rockDrumSet">Drum Kit</option>
+			<option value="bongos">Bongos</option>
+			<option value="parade">Street Parade</option>
+		</select>
+		
+		<select class="presets" name="presets">
+			<option value="" disabled selected>Load Rhythm</option>
+			<optgroup label="Africa">
+					<option value="souskous">Souskous (Congo, Africa)</option>
+					<option value="gahu">Gahu (Ghana, Africa)</option>
+					<option value="sikyi">Sikyi (Ghana, Africa)</option>
+					<option value="sikyi2">Sikyi Variation</option>
+					<option value="shiko">Shiko (Nigeria, Africa)</option>
+			</optgroup>
+			<optgroup label="Carribean">
+				<option value="bembe">Bemb&eacute; (Cuba & Africa)</option>
+				<option value="rumba">Rumba (Cuba)</option>
+			</optgroup>
+			<optgroup label="North America">
+				<option value="basic">Basic Rock</option>
+				<!-- <option value="billieJean">Billie Jean</option> -->
+				<option value="funkyCowbell">Funky Cowbell</option>
+				<!-- <option value="lowrider">Lowrider</option>
+				<option value="yyz">YYZ</option> -->
+				<!-- <option value="apache">Jump On It</option> -->
+			</optgroup>
+			<optgroup label="South America">
+				<option value="bossaNova">Bossa Nova (Brazil, South America)</option>
+			</optgroup>
+		</select>
+
+		<select class="rules1" name="rules1">
+			<option value="" disabled selected>Melody Rule for First Instrument</option>
+			<option value="nullRule">No Melody</option>
+			<option value="replicate">Replicate</option>
+			<option value="replicateLong">Replicate (Long)</option>
+			<option value="replicateMono">Replicate (Monotone)</option>
+			<option value="shift1">Shift 1 Beat</option>
+			<option value="shift2">Shift 2 Beats</option>
+			<option value="shift3">Shift 3 Beats</option>
+			<option value="shift1Mono">Shift 1 Beat (Monotone)</option>
+			<option value="shift2Mono">Shift 2 Beats (Monotone)</option>
+			<option value="shift3Mono">Shift 3 Beats (Monotone)</option>
+			<option value="interval">Interval</option>
+			<option value="intervalShift">Interval (Shifted)</option>
+			<option value="intervalMono">Interval (Monotone)</option>
+			<option value="intervalShiftMono">Interval (Shifted and Monotone)</option>
+		</select>
+
+		<select class="rules2" name="rules2">
+			<option value="" disabled selected>Melody Rule for Second Instrument</option>
+			<option value="nullRule">No Melody</option>
+			<option value="replicate">Replicate</option>
+			<option value="replicateLong">Replicate (Long)</option>
+			<option value="replicateMono">Replicate (Monotone)</option>
+			<option value="shift1">Shift 1 Beat</option>
+			<option value="shift2">Shift 2 Beats</option>
+			<option value="shift3">Shift 3 Beats</option>
+			<option value="shift1Mono">Shift 1 Beat (Monotone)</option>
+			<option value="shift2Mono">Shift 2 Beats (Monotone)</option>
+			<option value="shift3Mono">Shift 3 Beats (Monotone)</option>
+			<option value="interval">Interval</option>
+			<option value="intervalShift">Interval (Shifted)</option>
+			<option value="intervalMono">Interval (Monotone)</option>
+			<option value="intervalShiftMono">Interval (Shifted and Monotone)</option>
+		</select>
+		
+		<select class="rules3" name="rules3">
+			<option value="" disabled selected>Melody Rule for Third Instrument</option>
+			<option value="nullRule">No Melody</option>
+			<option value="replicate">Replicate</option>
+			<option value="replicateLong">Replicate (Long)</option>
+			<option value="replicateMono">Replicate (Monotone)</option>
+			<option value="shift1">Shift 1 Beat</option>
+			<option value="shift2">Shift 2 Beats</option>
+			<option value="shift3">Shift 3 Beats</option>
+			<option value="shift1Mono">Shift 1 Beat (Monotone)</option>
+			<option value="shift2Mono">Shift 2 Beats (Monotone)</option>
+			<option value="shift3Mono">Shift 3 Beats (Monotone)</option>
+			<option value="interval">Interval</option>
+			<option value="intervalShift">Interval (Shifted)</option>
+			<option value="intervalMono">Interval (Monotone)</option>
+			<option value="intervalShiftMono">Interval (Shifted and Monotone)</option>
+		</select>
+		
+		<select class="rules4" name="rules4">
+			<option value="" disabled selected>Melody Rule for Fourth Instrument</option>
+			<option value="nullRule">No Melody</option>
+			<option value="replicate">Replicate</option>
+			<option value="replicateLong">Replicate (Long)</option>
+			<option value="replicateMono">Replicate (Monotone)</option>
+			<option value="shift1">Shift 1 Beat</option>
+			<option value="shift2">Shift 2 Beats</option>
+			<option value="shift3">Shift 3 Beats</option>
+			<option value="shift1Mono">Shift 1 Beat (Monotone)</option>
+			<option value="shift2Mono">Shift 2 Beats (Monotone)</option>
+			<option value="shift3Mono">Shift 3 Beats (Monotone)</option>
+			<option value="interval">Interval</option>
+			<option value="intervalShift">Interval (Shifted)</option>
+			<option value="intervalMono">Interval (Monotone)</option>
+			<option value="intervalShiftMono">Interval (Shifted and Monotone)</option>
+		</select>
+		
+		<ul class="instrument-names"></ul>
+	</div>
+	
+	<button class="clear-notes">Clear All</button>
+	
+	<div id="message"></div>
+	<!-- <div id="legend">		
+		<span class="legend-title">Controls</span>
+		<div class="backdrop">
+			<table>
+				<thead>
+					<tr class="divider">
+						<td>Function</td>
+						<td>Key</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Rotate</td>
+						<td>left click</td>
+					</tr>
+					<tr>
+						<td>Pan</td>
+						<td>right click</td>
+					</tr>
+					<tr>
+						<td>Zoom</td>
+						<td>scroll</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div> -->
+	
+	<div class="play-controls">
+		
+		<div class="control">
+			<div class="play-toggle">
+				<svg class="play" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="124.512px" height="124.512px" viewBox="0 0 124.512 124.512" xml:space="preserve">
+					<g>
+						<path d="M113.956,57.006l-97.4-56.2c-4-2.3-9,0.6-9,5.2v112.5c0,4.6,5,7.5,9,5.2l97.4-56.2 C117.956,65.105,117.956,59.306,113.956,57.006z"/>
+					</g>
+				</svg>
+				<svg class="pause" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="353.562px" height="353.562px" viewBox="0 0 353.562 353.562" xml:space="preserve">
+					<g>
+						<path d="M41.064,353.562h109.014V0H41.064V353.562z"/>
+					</g>
+					<g>
+						<path d="M203.482,0v353.562h109.017V0H203.482z"/>
+					</g>
+				</svg>
+			</div>
+		</div>
+		
+		<div class="control">
+			<div class="input-stepper">
+				<div class="input-items">	
+					<button type="button" class="decrease">–</button>
+					<input type="number" id="bpm" name="bpm" min="40" max="200" step="10" value="120">
+					<button type="button" class="increase">+</button>
+				</div>
+				<label for="bpm">BPM</label>
+			</div>
+		</div>
+		
+		<div class="control">
+			<div class="input-stepper">
+				<div class="input-items">	
+					<button type="button" class="decrease">–</button>
+					<input type="number" id="wheelLength" name="wheelLength" min="8" max="64" step="1" value="16">
+					<button type="button" class="increase">+</button>
+				</div>
+				<label for="wheelLength">Length</label>
+			</div>	
+		</div>
+		
+	</div>
+	
+	<div id="author">
+		<div class="column description">
+			Code Authors:<br>
+			Russell Strauss & Jiewen Wang<br>
+			CS 6497: Computational Aesthetics<br>
+			Taught by Jarek Rossinac<br>
+			Georgia Insitute of Technology<br>
+			Fall 2019
+		</div>
+		<div class="column">
+			<div class="portrait">
+				<img src="assets/img/portrait.jpg" alt="">
+			</div>
+			<div class="portrait">
+				<img src="assets/img/jwang.jpg" alt="">
+			</div>
+		</div>
+	</div>
+	
+	<script src="assets/vendors/js/vendors.js"></script>
+	<script src="assets/js/bundle.js"></script>
+</body>
+</html>
