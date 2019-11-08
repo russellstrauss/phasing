@@ -248,7 +248,7 @@ module.exports = function () {
       tracks2 = [];
   var rhythmCount = 0;
   var scope;
-  var loop;
+  var loop, loop2;
   var preset = beats.empty;
   return {
     settings: {
@@ -359,33 +359,31 @@ module.exports = function () {
       }
 
       loop = new Tone.Loop(function (time) {
-        triggerBeats(time);
+        console.log('loop1 ', time);
+        triggerBeats(time, timeCursor, tracks);
+        rhythmCount++;
       }, '16n');
       loop.start(0);
+      loop2 = new Tone.Loop(function (time) {
+        console.log('loop2 ', time);
+        triggerBeats(time, timeCursor2, tracks2);
+      }, '16n');
+      loop2.start(0);
       scope = self;
 
-      function triggerBeats(time) {
+      function triggerBeats(time, timeCursor, tracks) {
         timeCursor.rotation.y += -2 * Math.PI / scope.settings.rhythmWheel.beats;
-        timeCursor2.rotation.y += -2 * Math.PI / scope.settings.rhythmWheel.beats;
         var beat = rhythmCount % scope.settings.rhythmWheel.beats;
 
         for (var i = 0; i < scope.settings.rhythmWheel.tracks; i++) {
           if (tracks[i]) {
             // an instrument added but no notes for that instrument in preset.beat[]
             if (tracks[i][beat] !== null) {
-              preset.instruments[i].start(time, 0);
-            }
-          }
-
-          if (tracks2[i]) {
-            // an instrument added but no notes for that instrument in preset.beat[]
-            if (tracks2[i][beat] !== null) {
+              console.log('beat ', time);
               preset.instruments[i].start(time, 0);
             }
           }
         }
-
-        rhythmCount++;
       }
     },
     addGeometries: function addGeometries() {
