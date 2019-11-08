@@ -22,10 +22,10 @@ module.exports = function() {
 	var textColors = ['white', 'white', 'white', 'black', 'white', 'black', 'black', 'black', 'white', 'white', 'white'];
 	
 	var black = new THREE.Color('black');
-	var timeCursor;
+	var timeCursor, timeCursor2;
 	var playing = false;
 	var targetList = [];
-	var rhythmWheelMesh, wireframeMesh;
+	var rhythmWheelMesh, rhythmWheelMesh2, wireframeMesh, wireframeMesh2;
 	var tracks = [];
 	var rhythmCount = 0;
 	var scope;
@@ -99,7 +99,8 @@ module.exports = function() {
 			if (utils.mobile()) gfx.setCameraLocation(camera, new THREE.Vector3(self.settings.defaultCameraLocation.x, self.settings.defaultCameraLocation.y + 5, self.settings.defaultCameraLocation.z));
 			camera.lookAt(new THREE.Vector3(0, 0, 0));
 			self.addGeometries();
-			self.addLabels();
+			self.addLabels(rhythmWheelMesh);
+			self.addLabels(rhythmWheelMesh2);
 			self.setUpRhythm();
 			
 			var animate = function() {
@@ -158,6 +159,7 @@ module.exports = function() {
 			function triggerBeats(time) {
 				
 				timeCursor.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
+				timeCursor2.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
 				//timeCursor.rotateOnAxis(new THREE.Vector3(-10, 0, 0), -2*Math.PI/scope.settings.rhythmWheel.beats);
 				
 				let beat = rhythmCount % scope.settings.rhythmWheel.beats;
@@ -202,24 +204,37 @@ module.exports = function() {
 			
 			let materials = [translucentFaceMaterial, solidFaceMaterial];
 			rhythmWheelMesh = new THREE.Mesh(rhythmWheel, materials);
+			rhythmWheelMesh2 = new THREE.Mesh(rhythmWheel, materials);
 			
-			rhythmWheelMesh.position.x -= 10;
-			console.log(rhythmWheelMesh.position);
+			rhythmWheelMesh.position.x -= 7;
+			rhythmWheelMesh2.position.x += 7;
 			self.setEmptyFaceColors();
 			
 			wireframeMesh = new THREE.Mesh(rhythmWheel, wireframeMaterial);
+			wireframeMesh2 = new THREE.Mesh(rhythmWheel, wireframeMaterial);
 			wireframeMesh.position.y += this.settings.zBufferOffset * 2;
-			wireframeMesh.position.x -= 10;
+			wireframeMesh2.position.y += this.settings.zBufferOffset * 2;
+			wireframeMesh.position.x -= 7;
+			wireframeMesh2.position.x += 7;
 			targetList.push(rhythmWheelMesh);
 			scene.add(rhythmWheelMesh);
+			scene.add(rhythmWheelMesh2);
 			scene.add(wireframeMesh);
+			scene.add(wireframeMesh2);
 			
 			var geometry = new THREE.BoxGeometry(0.1, 0.01, this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius);
+			//geometry.translate(-10, 1, 0);
 			//geometry.translate(0, 0.1/2, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
 			var material = new THREE.MeshBasicMaterial({color: black, transparent: true, opacity: 0.75});
 			timeCursor = new THREE.Mesh(geometry, material);
-			timeCursor.position.set(-10, 0.1/2, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
+			timeCursor2 = new THREE.Mesh(geometry, material);
+			
+			geometry.translate(0, .01, -(this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius)/2 - this.settings.rhythmWheel.innerRadius);
+			timeCursor.position.set(rhythmWheelMesh.position.x, this.settings.zBufferOffset * 2, 0);
+			
+			timeCursor2.position.set(rhythmWheelMesh2.position.x, this.settings.zBufferOffset * 2, 0);
 			scene.add(timeCursor);
+			scene.add(timeCursor2);
 		},
 		
 		setEmptyFaceColors: function() {
@@ -525,11 +540,11 @@ module.exports = function() {
 			}
 		},
 		
-		addLabels: function() {
+		addLabels: function(mesh) {
 			
 			let self = this;
 			let transform = new THREE.Vector3(0, 0, -this.settings.rhythmWheel.outerRadius);
-			let wheelCenter = new THREE.Vector3(rhythmWheelMesh.position.x, rhythmWheelMesh.position.y, rhythmWheelMesh.position.z);
+			let wheelCenter = new THREE.Vector3(mesh.position.x, mesh.position.y, mesh.position.z);
 			
 			let instrumentNames = document.querySelector('.instrument-names');
 			instrumentNames.innerHTML = '';
