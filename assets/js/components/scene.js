@@ -27,7 +27,7 @@ module.exports = function() {
 	var targetList = [];
 	var rhythmWheelMesh, rhythmWheelMesh2, wireframeMesh, wireframeMesh2;
 	var tracks = [], tracks2 = [];
-	var rhythmCount = 0;
+	var rhythmCount = 0, rhythmCount2 = 0;
 	var scope;
 	var loop, loop2;
 
@@ -155,25 +155,28 @@ module.exports = function() {
 			}
 
 			loop = new Tone.Loop(function(time) {
-				console.log('loop1 ', time);
-				triggerBeats(time, timeCursor, tracks);
+				
+				// if (Tone.context.state !== 'running') {
+				// 	Tone.context.resume();
+				// }
+				
+				triggerBeats(time, timeCursor, tracks, rhythmCount);
 				rhythmCount++;
 			}, '16n');
 			loop.start(0);
 			
 			loop2 = new Tone.Loop(function(time) {
-				console.log('loop2 ', time);
-				triggerBeats(time, timeCursor2, tracks2);
+				triggerBeats(time, timeCursor2, tracks2, rhythmCount2);
+				rhythmCount2++;
 			}, '16n');
 			loop2.start(0);
 			
 			loop2.playbackRate = .985;
 			
 			scope = self;
-			function triggerBeats(time, timeCursor, tracks) {
+			function triggerBeats(time, timeCursor, tracks, rhythmCount) {
 				
 				timeCursor.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
-				
 				let beat = rhythmCount % scope.settings.rhythmWheel.beats;
 
 				for (let i = 0; i < scope.settings.rhythmWheel.tracks; i++) {
@@ -181,7 +184,6 @@ module.exports = function() {
 					if (tracks[i]) { // an instrument added but no notes for that instrument in preset.beat[]
 						
 						if (tracks[i][beat] !== null) {
-							console.log('beat ', time);
 							preset.instruments[i].start(time, 0);
 						}
 					}
@@ -412,7 +414,7 @@ module.exports = function() {
 			
 			Tone.Transport.stop();
 			Tone.Transport.cancel(0);
-			rhythmCount = 0;
+			rhythmCount = 0, rhythmCount2 = 0;
 			targetList = [];
 			
 			while(scene.children.length > 0){ 
