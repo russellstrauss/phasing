@@ -216,6 +216,20 @@ $legendWidth: 150px;
 			text-align: center;
 			appearance: none;
 			-moz-appearance: textfield;
+			
+			&.percentage {
+				width: 110px;
+				position: relative;
+				
+				&:after {
+					content: '%';
+					display: block;
+					position: absolute;
+					right: 0;
+					top: 0;
+					font-size: 2rem;
+				}
+			}
 		}
 		
 		input[type="number"]::-webkit-outer-spin-button,

@@ -1,3 +1,5 @@
+var StartAudioContext = require('startaudiocontext');
+
 module.exports = function() {
 	
 	var renderer, scene, camera, controls, floor;
@@ -163,13 +165,13 @@ module.exports = function() {
 				triggerBeats(time, timeCursor, tracks, rhythmCount);
 				rhythmCount++;
 			}, '16n');
-			loop.start(0);
+			//loop.start(0);
 			
 			loop2 = new Tone.Loop(function(time) {
 				triggerBeats(time, timeCursor2, tracks2, rhythmCount2);
 				rhythmCount2++;
 			}, '16n');
-			loop2.start(0);
+			//loop2.start(0);
 			
 			loop2.playbackRate = .985;
 			
@@ -347,6 +349,30 @@ module.exports = function() {
 				self.reset();
 			});
 			
+			StartAudioContext(Tone.context, '.play-toggle');
+			
+			let playToggle = document.querySelector('.play-toggle');
+			playToggle.addEventListener('click', function() {
+				
+				playToggle.classList.toggle('active');
+				Tone.Transport.toggle();
+				if (Tone.Transport.state === 'started') {
+					Tone.context.resume()
+					loop.start(0);
+					loop2.start(0);
+				}
+				else {
+					Tone.Transport.cancel(0)
+					loop.stop();
+					loop2.stop();
+				}
+				setInterval(function() {
+					Tone.Transport.resume()
+					loop.start(0);
+					loop2.start(0);
+				}, 25);
+			});
+			
 			let clearButton = document.querySelector('.clear-notes');
 			if (clearButton) clearButton.addEventListener('click', function() {
 				
@@ -381,6 +407,29 @@ module.exports = function() {
 					});
 				}
 				
+				if (input.getAttribute('id') === 'phase') {
+					
+					let increase = inputStepper.querySelector('.increase');
+					if (increase) increase.addEventListener('click', function() {
+						let max = parseFloat(input.getAttribute('max'));
+						if (input.value < max) {
+							let newRate = parseFloat(input.value) + .5;
+							input.value = newRate;
+							loop2.playbackRate = newRate/100;
+						}
+					});
+					
+					let decrease = inputStepper.querySelector('.decrease');
+					if (decrease) decrease.addEventListener('click', function() {
+						let min = parseFloat(input.getAttribute('min'));
+						if (input.value > min) {
+							let newRate = parseFloat(input.value) - .5
+							input.value = newRate;
+							loop2.playbackRate = newRate/100;
+							console.log(newRate/100);
+						}
+					});
+				}
 			});
 		},
 		

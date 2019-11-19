@@ -13,12 +13,12 @@
 	
 	<div class="play-selection">
 		
-		<select class="instrument-selection">
+		<!-- <select class="instrument-selection">
 			<option value="" disabled selected>Load Instrument Set</option>
 			<option value="rockDrumSet">Drum Kit</option>
 			<option value="bongos">Bongos</option>
 			<option value="parade">Street Parade</option>
-		</select>
+		</select> -->
 		
 		<select class="presets" name="presets">
 			<option value="" disabled selected>Load Rhythm</option>
@@ -92,6 +92,17 @@
 					<button type="button" class="increase">+</button>
 				</div>
 				<label for="wheelLength">Length</label>
+			</div>	
+		</div>
+		
+		<div class="control">
+			<div class="input-stepper">
+				<div class="input-items">	
+					<button type="button" class="decrease">–</button>
+					<input type="number" class="percentage" id="phase" name="phase" min="50" max="125" step="0.5" value="98.5">%
+					<button type="button" class="increase">+</button>
+				</div>
+				<label for="phase">Phase</label>
 			</div>	
 		</div>
 		

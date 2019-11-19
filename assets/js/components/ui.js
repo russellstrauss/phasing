@@ -1,5 +1,7 @@
 module.exports = function() {
 	
+	var playing = false;
+	
 	return {
 		
 		settings: {
@@ -39,13 +41,27 @@ module.exports = function() {
 						}
 					});
 				}
-			});
-			
-			let playToggle = document.querySelector('.play-toggle');
-			playToggle.addEventListener('click', function() {
 				
-				playToggle.classList.toggle('active');
-				Tone.Transport.toggle();
+				if (input.getAttribute('id') === 'phase') {
+					
+					let increase = inputStepper.querySelector('.increase');
+					if (increase) increase.addEventListener('click', function() {
+						let max = parseFloat(input.getAttribute('max'));
+						if (input.value < max) {
+							input.value = parseFloat(input.value) + .5;
+							//Tone.Transport.bpm.value += 1;
+						}
+					});
+					
+					let decrease = inputStepper.querySelector('.decrease');
+					if (decrease) decrease.addEventListener('click', function() {
+						let min = parseFloat(input.getAttribute('min'));
+						if (input.value > min) {
+							input.value = parseFloat(input.value) - .5;
+							//Tone.Transport.bpm.value -= 1;
+						}
+					});
+				}
 			});
 			
 			let bpmInput = document.querySelector('#bpm');
