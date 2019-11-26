@@ -35,6 +35,7 @@ var vendors = {
 		//'./assets/vendors/js/three.js'
 		'./assets/vendors/js/three.js/build/three.min.js',
 		'./assets/vendors/js/three.js/examples/js/controls/OrbitControls.js',
+		'./assets/vendors/js/three.js/examples/js/loaders/SVGLoader.js',
 		'./assets/vendors/js/three.js/examples/js/libs/stats.min.js',
 		'./assets/vendors/js/three.js/examples/js/libs/dat.gui.min.js',
 		'./assets/vendors/js/Tone.js'

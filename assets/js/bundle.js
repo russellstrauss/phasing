@@ -239,6 +239,11 @@ module.exports = function () {
     opacity: 0.25,
     transparent: true
   });
+  var invisibleMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color('white'),
+    opacity: 0,
+    transparent: true
+  });
   var distinctColors = [new THREE.Color('#2F72CA'), new THREE.Color('#A82F2F'), new THREE.Color('#18995B'), new THREE.Color('#F2B233'), new THREE.Color('#543459'), new THREE.Color('#f58231'), new THREE.Color('#6EC2ED'), new THREE.Color('#B898B9'), new THREE.Color('#BA2B06'), new THREE.Color('#123546'), new THREE.Color('#D5638A')];
   var textColors = ['white', 'white', 'white', 'black', 'white', 'black', 'black', 'black', 'white', 'white', 'white'];
   var black = new THREE.Color('black');
@@ -251,7 +256,13 @@ module.exports = function () {
   var rhythmCount = 0,
       rhythmCount2 = 0;
   var scope;
-  var loop, loop2;
+  var loop1, loop2;
+  var clearWheel1,
+      clearWheel2,
+      copyWheel,
+      muteWheel,
+      muted = false,
+      muteLabel;
   var preset = beats.empty;
   return {
     settings: {
@@ -276,7 +287,7 @@ module.exports = function () {
       smallFont: {
         fontStyle: {
           font: null,
-          size: 0.18,
+          size: 0.2,
           height: 0,
           curveSegments: 1
         }
@@ -313,8 +324,9 @@ module.exports = function () {
       if (utils.mobile()) gfx.setCameraLocation(camera, new THREE.Vector3(self.settings.defaultCameraLocation.x, self.settings.defaultCameraLocation.y + 5, self.settings.defaultCameraLocation.z));
       camera.lookAt(new THREE.Vector3(0, 0, 0));
       self.addGeometries();
-      self.addLabels(rhythmWheelMesh);
-      self.addLabels(rhythmWheelMesh2);
+      self.addWheelLabels(rhythmWheelMesh);
+      self.addWheelLabels(rhythmWheelMesh2);
+      self.addUILabels();
       self.setUpRhythm();
 
       var animate = function animate() {
@@ -361,23 +373,20 @@ module.exports = function () {
         }
       }
 
-      loop = new Tone.Loop(function (time) {
-        // if (Tone.context.state !== 'running') {
-        // 	Tone.context.resume();
-        // }
-        triggerBeats(time, timeCursor, tracks, rhythmCount);
+      loop1 = new Tone.Loop(function (time) {
+        triggerBeats(time, timeCursor, tracks, rhythmCount, false);
         rhythmCount++;
-      }, '16n'); //loop.start(0);
+      }, '16n'); //loop1.start(0);
 
       loop2 = new Tone.Loop(function (time) {
-        triggerBeats(time, timeCursor2, tracks2, rhythmCount2);
+        triggerBeats(time, timeCursor2, tracks2, rhythmCount2, muted);
         rhythmCount2++;
       }, '16n'); //loop2.start(0);
 
       loop2.playbackRate = .985;
       scope = self;
 
-      function triggerBeats(time, timeCursor, tracks, rhythmCount) {
+      function triggerBeats(time, timeCursor, tracks, rhythmCount, muted) {
         timeCursor.rotation.y += -2 * Math.PI / scope.settings.rhythmWheel.beats;
         var beat = rhythmCount % scope.settings.rhythmWheel.beats;
 
@@ -385,7 +394,7 @@ module.exports = function () {
           if (tracks[i]) {
             // an instrument added but no notes for that instrument in preset.beat[]
             if (tracks[i][beat] !== null) {
-              preset.instruments[i].start(time, 0);
+              if (!muted) preset.instruments[i].start(time, 0);
             }
           }
         }
@@ -432,7 +441,25 @@ module.exports = function () {
       scene.add(rhythmWheelMesh2);
       scene.add(wireframeMesh);
       scene.add(wireframeMesh2);
-      var geometry = new THREE.BoxGeometry(0.1, 0.01, this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius);
+      var geometry = new THREE.BoxGeometry(1.35, .01, 1.35);
+      clearWheel1 = new THREE.Mesh(geometry, invisibleMaterial);
+      clearWheel1.position.set(rhythmWheelMesh.position.x, rhythmWheelMesh.position.y, rhythmWheelMesh.position.z);
+      targetList.push(clearWheel1);
+      scene.add(clearWheel1);
+      clearWheel2 = new THREE.Mesh(geometry, invisibleMaterial);
+      clearWheel2.position.set(rhythmWheelMesh2.position.x, rhythmWheelMesh2.position.y, rhythmWheelMesh2.position.z);
+      targetList.push(clearWheel2);
+      scene.add(clearWheel2);
+      copyWheel = new THREE.Mesh(geometry, invisibleMaterial);
+      copyWheel.position.set((rhythmWheelMesh.position.x + rhythmWheelMesh2.position.x) / 2, (rhythmWheelMesh.position.y + rhythmWheelMesh2.position.y) / 2, (rhythmWheelMesh.position.z + rhythmWheelMesh2.position.z) / 2);
+      targetList.push(copyWheel);
+      scene.add(copyWheel);
+      geometry = new THREE.BoxGeometry(2, .01, .8);
+      muteWheel = new THREE.Mesh(geometry, invisibleMaterial);
+      muteWheel.position.set(clearWheel2.position.x, clearWheel2.position.y, clearWheel2.position.z + 6.5);
+      targetList.push(muteWheel);
+      scene.add(muteWheel);
+      geometry = new THREE.BoxGeometry(0.1, 0.01, this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius);
       var material = new THREE.MeshBasicMaterial({
         color: black,
         transparent: true,
@@ -504,7 +531,7 @@ module.exports = function () {
       var instrumentSelector = document.querySelector('.instrument-selection');
       var presetSelector = document.querySelector('.presets');
       if (presetSelector) presetSelector.addEventListener('change', function () {
-        instrumentSelector.selectedIndex = 0;
+        if (instrumentSelector) instrumentSelector.selectedIndex = 0;
         wheelLengthInput.parentElement.parentElement.style.display = 'none';
         preset = beats[presetSelector.value];
         tracks = [];
@@ -525,27 +552,18 @@ module.exports = function () {
         self.settings.rhythmWheel.beats = beats.instrumentSets[instrumentSelector.value].length;
         self.reset();
       });
-      StartAudioContext(Tone.context, '.play-toggle');
       var playToggle = document.querySelector('.play-toggle');
       playToggle.addEventListener('click', function () {
-        playToggle.classList.toggle('active');
-        Tone.Transport.toggle();
+        StartAudioContext(Tone.context);
 
-        if (Tone.Transport.state === 'started') {
+        if (Tone.context.state !== 'running') {
           Tone.context.resume();
-          loop.start(0);
-          loop2.start(0);
-        } else {
-          Tone.Transport.cancel(0);
-          loop.stop();
-          loop2.stop();
         }
 
-        setInterval(function () {
-          Tone.Transport.resume();
-          loop.start(0);
-          loop2.start(0);
-        }, 25);
+        playToggle.classList.toggle('active');
+        Tone.Transport.toggle();
+        loop1.start(0);
+        loop2.start(0);
       });
       var clearButton = document.querySelector('.clear-notes');
       if (clearButton) clearButton.addEventListener('click', function () {
@@ -599,7 +617,6 @@ module.exports = function () {
               var newRate = parseFloat(input.value) - .5;
               input.value = newRate;
               loop2.playbackRate = newRate / 100;
-              console.log(newRate / 100);
             }
           });
         }
@@ -636,9 +653,11 @@ module.exports = function () {
       }
 
       self.addGeometries();
-      self.addLabels(rhythmWheelMesh);
-      self.addLabels(rhythmWheelMesh2);
+      self.addWheelLabels(rhythmWheelMesh);
+      self.addWheelLabels(rhythmWheelMesh2);
+      self.addUILabels();
       self.setUpRhythm();
+      muted = false;
       var playToggle = document.querySelector('.play-toggle');
       playToggle.classList.remove('active');
     },
@@ -672,6 +691,40 @@ module.exports = function () {
       if (intersects.length > 0) {
         var faceIndex = intersects[0].faceIndex;
         self.setUpFaceClicks(faceIndex, intersects[0].object);
+        self.setUpDeleteAndCopyClicks(intersects[0].object);
+      }
+    },
+    setUpDeleteAndCopyClicks: function setUpDeleteAndCopyClicks(object) {
+      if (object === copyWheel) this.copyWheel();
+      if (object === clearWheel1) this.clearWheel(rhythmWheelMesh);
+      if (object === clearWheel2) this.clearWheel(rhythmWheelMesh2);
+      if (object === muteWheel) this.togglePhaseMute();
+    },
+    togglePhaseMute: function togglePhaseMute() {
+      var self = this;
+      scene.remove(muteLabel);
+
+      if (!muted) {
+        muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Unmute Phase', scene, black, self.settings.smallFont);
+      } else {
+        muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
+      }
+
+      muted = !muted;
+    },
+    copyWheel: function copyWheel() {
+      tracks2 = tracks;
+      this.reset();
+    },
+    clearWheel: function clearWheel(mesh) {
+      var self = this;
+
+      if (mesh === rhythmWheelMesh) {
+        tracks = [];
+        self.reset();
+      } else if (mesh === rhythmWheelMesh2) {
+        tracks2 = [];
+        self.reset();
       }
     },
     setUpFaceClicks: function setUpFaceClicks(faceIndex, mesh) {
@@ -741,8 +794,9 @@ module.exports = function () {
       }, 250));
     },
     labelPoint: function labelPoint(pt, label, scene, color, font) {
+      var self = this,
+          mesh;
       font = font || this.settings.font;
-      var self = this;
       var textCenterOffset = font.fontStyle.size / 2;
 
       if (this.settings.font.enable) {
@@ -753,11 +807,13 @@ module.exports = function () {
         var textMaterial = new THREE.MeshBasicMaterial({
           color: color
         });
-        var mesh = new THREE.Mesh(textGeometry, textMaterial);
+        mesh = new THREE.Mesh(textGeometry, textMaterial);
         scene.add(mesh);
       }
+
+      return mesh;
     },
-    addLabels: function addLabels(mesh) {
+    addWheelLabels: function addWheelLabels(mesh) {
       var self = this;
       var transform = new THREE.Vector3(0, 0, -this.settings.rhythmWheel.outerRadius);
       var wheelCenter = new THREE.Vector3(mesh.position.x, mesh.position.y, mesh.position.z);
@@ -794,6 +850,16 @@ module.exports = function () {
           self.labelPoint(labelPoint, '&', scene, black, self.settings.smallFont);
         }
       }
+    },
+    addUILabels: function addUILabels() {
+      var self = this;
+      self.labelPoint(new THREE.Vector3(clearWheel1.position.x - .2, clearWheel1.position.y, clearWheel1.position.z), 'Clear', scene, black, self.settings.smallFont);
+      self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .2, clearWheel2.position.y, clearWheel2.position.z), 'Clear', scene, black, self.settings.smallFont);
+      self.labelPoint(new THREE.Vector3(copyWheel.position.x - .6, copyWheel.position.y, copyWheel.position.z), 'Copy', scene, black, self.settings.smallFont);
+      muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
+      gfx.drawLine(new THREE.Vector3(.25, 0, 0), new THREE.Vector3(1, 0, 0), scene, black);
+      gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, -.2), scene, black);
+      gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, .2), scene, black);
     }
   };
 };
