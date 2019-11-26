@@ -147,8 +147,8 @@ module.exports = function() {
 			
 			self.initEmptyTracks();
 			
-			if (typeof preset.beat[0] !== 'undefined') tracks = preset.beat;
-			if (typeof preset.beat[0] !== 'undefined') tracks2 = preset.beat;
+			if (typeof preset.beat1[0] !== 'undefined') tracks = preset.beat1;
+			if (typeof preset.beat2[0] !== 'undefined') tracks2 = preset.beat2;
 			
 			for (let track = 0; track < tracks.length; track++) {
 				
@@ -161,14 +161,14 @@ module.exports = function() {
 
 			loop1 = new Tone.Loop(function(time) {
 				
-				triggerBeats(time, timeCursor, tracks, rhythmCount, false);
+				triggerBeats(time, timeCursor, tracks, rhythmCount);
 				rhythmCount++;
 			}, '16n');
 			//loop1.start(0);
 			
 			loop2 = new Tone.Loop(function(time) {
 				
-				triggerBeats(time, timeCursor2, tracks2, rhythmCount2, muted);
+				triggerBeats(time, timeCursor2, tracks2, rhythmCount2);
 				rhythmCount2++;
 			}, '16n');
 			//loop2.start(0);
@@ -176,7 +176,7 @@ module.exports = function() {
 			loop2.playbackRate = .985;
 			
 			scope = self;
-			function triggerBeats(time, timeCursor, tracks, rhythmCount, muted) {
+			function triggerBeats(time, timeCursor, tracks, rhythmCount) {
 				
 				timeCursor.rotation.y += -2*Math.PI/scope.settings.rhythmWheel.beats;
 				let beat = rhythmCount % scope.settings.rhythmWheel.beats;
@@ -186,7 +186,7 @@ module.exports = function() {
 					if (tracks[i]) { // an instrument added but no notes for that instrument in preset.beat[]
 						
 						if (tracks[i][beat] !== null) {
-							if (!muted) preset.instruments[i].start(time, 0);
+							preset.instruments[i].start(time, 0);
 						}
 					}
 				}
@@ -262,7 +262,7 @@ module.exports = function() {
 			muteWheel = new THREE.Mesh(geometry, invisibleMaterial);
 			muteWheel.position.set(clearWheel2.position.x, clearWheel2.position.y, clearWheel2.position.z + 6.5);
 			targetList.push(muteWheel);
-			scene.add(muteWheel);
+			//scene.add(muteWheel);
 			
 			geometry = new THREE.BoxGeometry(0.1, 0.01, this.settings.rhythmWheel.outerRadius - this.settings.rhythmWheel.innerRadius);
 			var material = new THREE.MeshBasicMaterial({color: black, transparent: true, opacity: 0.75});
@@ -491,6 +491,7 @@ module.exports = function() {
 			
 			let playToggle = document.querySelector('.play-toggle');
 			playToggle.classList.remove('active');
+			console.log(targetList);
 		},
 		
 		increaseWheel: function() {
@@ -537,7 +538,10 @@ module.exports = function() {
 		setUpDeleteAndCopyClicks(object) {
 			if (object === copyWheel) this.copyWheel();
 			if (object === clearWheel1) this.clearWheel(rhythmWheelMesh);
-			if (object === clearWheel2) this.clearWheel(rhythmWheelMesh2);
+			if (object === clearWheel2) {
+				
+				this.clearWheel(rhythmWheelMesh2);
+			}
 			if (object === muteWheel) this.togglePhaseMute();
 		},
 		
@@ -565,10 +569,12 @@ module.exports = function() {
 			let self = this; 
 			if (mesh === rhythmWheelMesh) {
 				tracks = [];
+				preset = beats['empty'];
 				self.reset();
 			}
 			else if (mesh === rhythmWheelMesh2) {
 				tracks2 = [];
+				preset = beats['empty'];
 				self.reset();
 			}
 		},
@@ -723,7 +729,7 @@ module.exports = function() {
 			self.labelPoint(new THREE.Vector3(clearWheel1.position.x - .2, clearWheel1.position.y, clearWheel1.position.z), 'Clear', scene, black, self.settings.smallFont);
 			self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .2, clearWheel2.position.y, clearWheel2.position.z), 'Clear', scene, black, self.settings.smallFont);
 			self.labelPoint(new THREE.Vector3(copyWheel.position.x - .6, copyWheel.position.y, copyWheel.position.z), 'Copy', scene, black, self.settings.smallFont);
-			muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
+			//muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
 			
 			gfx.drawLine(new THREE.Vector3(.25, 0, 0), new THREE.Vector3(1, 0, 0), scene, black);
 			gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, -.2), scene, black);

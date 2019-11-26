@@ -142,18 +142,25 @@
 			},
 			
 			empty: {
-				beat: new Array(defaultInstruments.length),
+				beat1: new Array(defaultInstruments.length),
+				beat2: new Array(defaultInstruments.length),
 				length: 16,
 				bpm: 100,
 				instruments: defaultInstruments
 			},
 			
-			basic: {
-				beat: [
-					['kick', null, null, null, null, null, null, 'kick', 'kick', null, null, null, null, null, 'kick', null],
-					[null, null, null, null, 'snare', null, null, null, null, null, null, null, 'snare', null, null, null],
-					['hh', null, 'hh', null, 'hh', null, 'hh', 'hh', 'hh', null, null, null, 'hh', null, 'hh', null],
-					[null, null, null, null, null, null, null, null, null, null, 'hho', null, null, null, null, null]
+			experiment1: {
+				beat1: [
+					[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+					[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+					[null, null, null, null, null, null, null, null, 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh'],
+					[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
+				],
+				beat2: [
+					[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+					[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+					['hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', null, null, null, null, null, null, null, null],
+					[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
 				],
 				length: 16,
 				bpm: 100,
