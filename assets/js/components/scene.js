@@ -33,7 +33,7 @@ module.exports = function() {
 	var rhythmCount = 0, rhythmCount2 = 0;
 	var scope;
 	var loop1, loop2;
-	var clearWheel1, clearWheel2, copyWheel, muteWheel, muted = false, muteLabel;
+	var clearWheel1, clearWheel2, copyWheel, muteWheel, muted = false, muteLabel, clearLabel1, clearLabel2, copyLabel, arrow1, arrow2, arrow3;
 
 	var preset = beats.empty;
 	
@@ -355,6 +355,12 @@ module.exports = function() {
 				self.settings.rhythmWheel.tracks = preset.instruments.length;
 				self.settings.rhythmWheel.beats = preset.length;
 				self.reset();
+				
+				
+				let remove = [clearLabel1, clearLabel2, clearWheel1, clearWheel2, copyWheel, copyLabel, arrow1, arrow2, arrow3];
+				remove.forEach(function(mesh) {
+					scene.remove(mesh);
+				});
 			});
 			
 			if (instrumentSelector) instrumentSelector.addEventListener('change', function() {
@@ -443,6 +449,16 @@ module.exports = function() {
 					});
 				}
 			});
+			
+			document.addEventListener('keyup', function(event) {
+				
+				let L = 76;
+				
+				if (event.keyCode === L) {
+					
+					console.log(tracks);
+				}
+			});
 		},
 		
 		clearAllNotes: function(mesh) {
@@ -491,7 +507,6 @@ module.exports = function() {
 			
 			let playToggle = document.querySelector('.play-toggle');
 			playToggle.classList.remove('active');
-			console.log(targetList);
 		},
 		
 		increaseWheel: function() {
@@ -569,12 +584,10 @@ module.exports = function() {
 			let self = this; 
 			if (mesh === rhythmWheelMesh) {
 				tracks = [];
-				preset = beats['empty'];
 				self.reset();
 			}
 			else if (mesh === rhythmWheelMesh2) {
 				tracks2 = [];
-				preset = beats['empty'];
 				self.reset();
 			}
 		},
@@ -726,14 +739,14 @@ module.exports = function() {
 		addUILabels: function() {
 			
 			let self = this;
-			self.labelPoint(new THREE.Vector3(clearWheel1.position.x - .2, clearWheel1.position.y, clearWheel1.position.z), 'Clear', scene, black, self.settings.smallFont);
-			self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .2, clearWheel2.position.y, clearWheel2.position.z), 'Clear', scene, black, self.settings.smallFont);
-			self.labelPoint(new THREE.Vector3(copyWheel.position.x - .6, copyWheel.position.y, copyWheel.position.z), 'Copy', scene, black, self.settings.smallFont);
+			clearLabel1 = self.labelPoint(new THREE.Vector3(clearWheel1.position.x - .2, clearWheel1.position.y, clearWheel1.position.z), 'Clear', scene, black, self.settings.smallFont);
+			clearLabel2 = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .2, clearWheel2.position.y, clearWheel2.position.z), 'Clear', scene, black, self.settings.smallFont);
+			copyLabel = self.labelPoint(new THREE.Vector3(copyWheel.position.x - .6, copyWheel.position.y, copyWheel.position.z), 'Copy', scene, black, self.settings.smallFont);
 			//muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
 			
-			gfx.drawLine(new THREE.Vector3(.25, 0, 0), new THREE.Vector3(1, 0, 0), scene, black);
-			gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, -.2), scene, black);
-			gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, .2), scene, black);
+			arrow1 = gfx.drawLine(new THREE.Vector3(.25, 0, 0), new THREE.Vector3(1, 0, 0), scene, black);
+			arrow2 = gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, -.2), scene, black);
+			arrow3 = gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, .2), scene, black);
 		}
 	};
 };

@@ -74,7 +74,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   var defaultInstruments = [player.get('kick'), player.get('snare'), player.get('hh'), player.get('hho'), player.get('tomLo'), player.get('tomHi'), player.get('cowbell'), player.get('ride')]; //[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 
   window.beats = function () {
-    return {
+    return _defineProperty({
       allInstruments: player,
       instrumentSets: {
         bongos: {
@@ -101,127 +101,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         instruments: defaultInstruments
       },
       experiment1: {
-        beat1: [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh'], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]],
-        beat2: [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], ['hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]],
-        length: 16,
-        bpm: 100,
-        instruments: [player.get('kick'), player.get('snare'), player.get('hh'), player.get('hho')]
-      },
-      bossaNova: {
-        beat: [['ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride'], ['kick', null, null, 'kick', 'kick', null, null, 'kick', 'kick', null, null, 'kick', 'kick', null, null, 'kick'], ['clave', null, null, 'clave', null, null, 'clave', null, null, null, 'clave', null, null, 'clave', null, null]],
-        length: 16,
-        bpm: 80,
-        instruments: [player.get('ride'), player.get('kick'), player.get('clave')]
-      },
-      funkyCowbell: {
-        beat: [['kick', null, 'kick', null, null, null, null, null, null, null, 'kick', null, null, 'kick', null, null], [null, null, null, null, 'snare', null, null, 'snare', null, 'snare', null, 'snare', 'snare', null, null, 'snare'], ['hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', null, 'hh', 'hh', 'hh', 'hh', 'hh', null, 'hh', 'hh'], [null, null, null, null, null, null, null, 'hho', null, null, null, null, null, 'hho', null, null], ['cowbell', null, 'cowbell', null, null, 'cowbell', null, 'cowbell', null, 'cowbell', null, 'cowbell', null, null, 'cowbell', null]],
-        length: 16,
-        bpm: 80,
-        instruments: [player.get('kick'), player.get('snare'), player.get('hh'), player.get('hho'), player.get('cowbell')]
-      },
-      // lowrider: {
-      // 	beat: [
-      // 		['cowbell', null, null, null, 'cowbell', null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, null, null],
-      // 		['kick', null, null, null, null, null, null, null, 'kick', null, null, null, null, null, null, null, 'kick', null, null, null, null, null, null, null, 'kick', null, null, null, null, null, null, null],
-      // 		[null, null, null, null, 'snare', null, null, null, null, null, null, null, 'snare', null, null, null, null, null, null, null, 'snare', null, null, null, null, null, null, null, 'snare', null, null, null],
-      // 		['hh', null, 'hh', null, 'hh', null, null, null, 'hh', null, 'hh', null, 'hh', null, null, null, 'hh', null, 'hh', null, 'hh', null, null, null, 'hh', null, 'hh', null, 'hh', null, null, null],
-      // 		[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-      // 		[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
-      // 	],
-      // 	bpm: 140,
-      // 	instruments: [
-      // 		player.get('cowbell'),
-      // 		player.get('kick'),
-      // 		player.get('snare'),
-      // 		player.get('hh'),
-      // 		player.get('brush1'),
-      // 		player.get('brush2')
-      // 	]
-      // },
-      // yyz: {
-      // 	beat: [
-      // 		['cowbell', null, null, null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, null, null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, null, null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null, null, null, 'cowbell', null, null, null, 'cowbell', null, 'cowbell', null]
-      // 	],
-      // 	bpm: 215,
-      // 	instruments: [
-      // 		player.get('cowbell')
-      // 	]
-      // }
-      bembe: {
-        beat: [['ride', null, 'ride', null, 'ride', 'ride', null, 'ride', null, 'ride', null, 'ride'], ['hh', null, null, 'hh', null, null, 'hh', null, null, 'hh', null, null], ['kick', null, null, null, null, null, null, null, null, null, null, 'kick'], [null, null, 'rim', null, null, null, null, 'rim', null, null, null, null], [null, null, null, null, null, null, null, null, null, null, 'tomLo', 'tomLo'], [null, null, null, null, null, 'tomHi', null, null, null, null, null, null]],
-        length: 12,
-        bpm: 90,
-        instruments: [player.get('ride'), player.get('hh'), player.get('tomLo'), player.get('tomHi'), player.get('kick'), player.get('rim')]
-      },
-      sikyi: {
-        beat: [['ride', null, 'ride', 'ride', null, null, 'ride', null, 'ride', null, 'ride', 'ride', null, null, 'ride', null], [null, null, null, null, null, null, 'hh', null, null, null, 'hh', null, null, null, 'hh', null], ['kick', null, null, null, 'kick', null, null, null, 'kick', null, null, null, 'kick', null, null, null], [null, 'tomLo', null, 'tomLo', null, null, null, null, null, null, 'tomLo', 'tomLo', null, null, null, null], [null, null, null, null, null, null, 'tomHi', 'tomHi', null, null, null, null, null, null, 'tomHi', 'tomHi']],
-        length: 16,
-        bpm: 130,
-        instruments: [player.get('ride'), player.get('hh'), player.get('kick'), player.get('tomLo'), player.get('tomHi')]
-      },
-      sikyi2: {
-        beat: [['ride', null, 'ride', 'ride', null, null, 'ride', null, 'ride', null, 'ride', 'ride', null, null, 'ride', null], [null, null, null, null, null, null, 'hh', null, null, null, 'hh', null, null, null, 'hh', null], ['kick', null, null, null, 'kick', null, null, null, 'kick', null, null, null, 'kick', null, null, null], [null, 'tomLo', null, 'tomLo', null, null, null, null, null, null, null, null, null, null, 'tomLo', 'tomLo'], [null, null, null, null, null, null, 'tomHi', null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, 'rim', null, null, null, null]],
-        length: 16,
-        bpm: 130,
-        instruments: [player.get('ride'), player.get('hh'), player.get('kick'), player.get('tomLo'), player.get('tomHi'), player.get('rim')]
-      },
-      // billieJean: {
-      // 	beat: [
-      // 		['kick', null, null, null, null, null, null, null, 'kick', null, null, null, null, null, null, null],
-      // 		[null, null, null, null, 'snare', null, null, null, null, null, null, null, 'snare', null, null, null],
-      // 		['hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null]
-      // 	],
-      // 	length: 16,
-      // 	bpm: 115,
-      // 	instruments: [
-      // 		player.get('snare'),
-      // 		player.get('kick'),
-      // 		player.get('hh')
-      // 	]
-      // },
-      rumba: {
-        beat: [['kick', null, null, 'kick', 'kick', null, null, 'kick', 'kick', null, null, 'kick', 'kick', null, null, 'kick'], ['rim', null, null, 'rim', null, null, null, 'rim', null, null, 'rim', null, 'rim', null, null, null], ['ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride', 'ride']],
-        length: 16,
-        bpm: 90,
-        instruments: [player.get('kick'), player.get('rim'), player.get('ride')]
-      },
-      gahu: {
-        beat: [['kick', null, null, null, 'kick', null, null, null, 'kick', null, null, null, 'kick', null, 'kick', null], [null, null, 'rim', 'rim', null, null, 'rim', 'rim', null, null, 'rim', 'rim', null, null, 'rim', 'rim'], ['bellHi', null, null, null, 'bellHi', null, 'bellHi', null, null, null, 'bellHi', null, 'bellHi', null, null, null]],
-        length: 16,
-        bpm: 100,
-        instruments: [player.get('kick'), player.get('rim'), player.get('bellHi')]
-      },
-      souskous: {
-        beat: [['kick', null, null, null, 'kick', null, null, null, 'kick', null, null, null, 'kick', null, 'kick', null], ['rim', null, null, 'rim', null, null, 'rim', null, 'rim', null, null, 'rim', null, null, 'rim', null], ['bellHi', null, null, 'bellHi', null, null, 'bellHi', null, null, 'bellHi', 'bellHi', null, null, null, null, null]],
+        beat1: [[null, null, null, null, null, null, null, null, "snare", "snare", null, null, null, null, null, null], ["hh", null, null, null, "hh", null, null, null, "hh", null, null, null, "hh", null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, 'tomLo', null, null, null, 'tomLo', null, null, null, 'tomLo', null, null, null, 'tomLo', null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, 'cowbell', null, null, null, null, null, null, null, 'cowbell'], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]],
+        beat2: [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], ['hh', null, null, null, 'hh', null, null, null, 'hh', null, null, null, 'hh', null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, 'tomLo', null, null, null, 'tomLo', null, null, null, 'tomLo', null, null, null, 'tomLo', null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]],
         length: 16,
         bpm: 120,
-        instruments: [player.get('kick'), player.get('rim'), player.get('bellHi')]
+        instruments: [player.get('snare'), player.get('hh'), player.get('hho'), player.get('tomLo'), player.get('tomHi'), player.get('cowbell'), player.get('ride')]
       },
-      shiko: {
-        beat: [['kick', null, null, null, 'kick', null, 'kick', null, 'kick', null, null, null, 'kick', null, 'kick', null], [null, null, 'rim', 'rim', null, null, 'rim', 'rim', null, null, 'rim', 'rim', null, null, 'rim', 'rim'], ['bellHi', null, null, null, 'bellHi', null, 'bellHi', null, null, null, 'bellHi', null, 'bellHi', null, null, null]],
+      experiment2: {
+        beat1: [[null, null, null, null, null, null, null, null, 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh']],
+        beat2: [['hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', 'hh', null, null, null, null, null, null, null, null]],
         length: 16,
-        bpm: 120,
-        instruments: [player.get('kick'), player.get('rim'), player.get('bellHi')]
-      } //,
-      // apache: {
-      // 	beat: [
-      // 		// ['bongoHi', null, null, 'bongoHi', 'bongoHi', null, null, 'bongoHi', null, 'bongoHi', null, 'bongoHi', 'bongoHi', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-      // 		// [null, null, null, null, null, null, 'bongoLo', null, null, null, null, null, null, 'bongoLo', 'bongoLo', 'bongoLo', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-      // 		[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'bongoHi', null, null, 'bongoHi', 'bongoHi', null, null, 'bongoHi', null, 'bongoHi', null, 'bongoHi', 'bongoHi', null, null, null],
-      // 		[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'bongoLo', null, null, null, null, null, null, 'bongoLo', 'bongoLo', 'bongoLo'],
-      // 		['bellHi', null, null, null, null, null, null, null, 'bellHi', null, null, null, 'bellHi', null, null, null, 'bellHi', null, null, null, null, null, null, null, 'bellHi', null, null, null, 'bellHi', null, null, null, 'bellHi', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
-      // 	],
-      // 	bpm: 108,
-      // 	instruments: [
-      // 		player.get('bongoHi'),
-      // 		player.get('bongoLo'),
-      // 		player.get('bellHi')
-      // 	]
-      // }
-
-    };
-  }(); //[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-
+        bpm: 100,
+        instruments: [player.get('hh')]
+      },
+      experiment3: {
+        beat1: [['hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null]],
+        beat2: [['hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null, 'hh', null]],
+        length: 16,
+        bpm: 100,
+        instruments: [player.get('hh')]
+      }
+    }, "experiment3", {
+      beat1: [[null, null, null, null, null, null, 'cowbell', null, null, null, null, null, null, null, 'cowbell', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, 'bellHi', 'bellHi', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, 'clave', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, 'rakeLo', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]],
+      beat2: [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, 'clave', null, null, null, 'clave', 'clave', null, null, null, null, null, null, 'clave', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]],
+      length: 16,
+      bpm: 100,
+      instruments: [player.get('cowbell'), player.get('bellHi'), player.get('clave'), player.get('rakeLo')]
+    });
+  }();
 
   module.exports = window.beats;
 })();
@@ -264,7 +171,13 @@ module.exports = function () {
       copyWheel,
       muteWheel,
       muted = false,
-      muteLabel;
+      muteLabel,
+      clearLabel1,
+      clearLabel2,
+      copyLabel,
+      arrow1,
+      arrow2,
+      arrow3;
   var preset = beats.empty;
   return {
     settings: {
@@ -541,6 +454,10 @@ module.exports = function () {
         self.settings.rhythmWheel.tracks = preset.instruments.length;
         self.settings.rhythmWheel.beats = preset.length;
         self.reset();
+        var remove = [clearLabel1, clearLabel2, clearWheel1, clearWheel2, copyWheel, copyLabel, arrow1, arrow2, arrow3];
+        remove.forEach(function (mesh) {
+          scene.remove(mesh);
+        });
       });
       if (instrumentSelector) instrumentSelector.addEventListener('change', function () {
         presetSelector.selectedIndex = 0;
@@ -623,6 +540,13 @@ module.exports = function () {
           });
         }
       });
+      document.addEventListener('keyup', function (event) {
+        var L = 76;
+
+        if (event.keyCode === L) {
+          console.log(tracks);
+        }
+      });
     },
     clearAllNotes: function clearAllNotes(mesh) {
       var self = this;
@@ -662,7 +586,6 @@ module.exports = function () {
       muted = false;
       var playToggle = document.querySelector('.play-toggle');
       playToggle.classList.remove('active');
-      console.log(targetList);
     },
     increaseWheel: function increaseWheel() {
       var self = this;
@@ -728,11 +651,9 @@ module.exports = function () {
 
       if (mesh === rhythmWheelMesh) {
         tracks = [];
-        preset = beats['empty'];
         self.reset();
       } else if (mesh === rhythmWheelMesh2) {
         tracks2 = [];
-        preset = beats['empty'];
         self.reset();
       }
     },
@@ -862,13 +783,13 @@ module.exports = function () {
     },
     addUILabels: function addUILabels() {
       var self = this;
-      self.labelPoint(new THREE.Vector3(clearWheel1.position.x - .2, clearWheel1.position.y, clearWheel1.position.z), 'Clear', scene, black, self.settings.smallFont);
-      self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .2, clearWheel2.position.y, clearWheel2.position.z), 'Clear', scene, black, self.settings.smallFont);
-      self.labelPoint(new THREE.Vector3(copyWheel.position.x - .6, copyWheel.position.y, copyWheel.position.z), 'Copy', scene, black, self.settings.smallFont); //muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
+      clearLabel1 = self.labelPoint(new THREE.Vector3(clearWheel1.position.x - .2, clearWheel1.position.y, clearWheel1.position.z), 'Clear', scene, black, self.settings.smallFont);
+      clearLabel2 = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .2, clearWheel2.position.y, clearWheel2.position.z), 'Clear', scene, black, self.settings.smallFont);
+      copyLabel = self.labelPoint(new THREE.Vector3(copyWheel.position.x - .6, copyWheel.position.y, copyWheel.position.z), 'Copy', scene, black, self.settings.smallFont); //muteLabel = self.labelPoint(new THREE.Vector3(clearWheel2.position.x - .6, clearWheel2.position.y, clearWheel2.position.z + 6.5), 'Mute Phase', scene, black, self.settings.smallFont);
 
-      gfx.drawLine(new THREE.Vector3(.25, 0, 0), new THREE.Vector3(1, 0, 0), scene, black);
-      gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, -.2), scene, black);
-      gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, .2), scene, black);
+      arrow1 = gfx.drawLine(new THREE.Vector3(.25, 0, 0), new THREE.Vector3(1, 0, 0), scene, black);
+      arrow2 = gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, -.2), scene, black);
+      arrow3 = gfx.drawLine(new THREE.Vector3(1, 0, 0), new THREE.Vector3(.8, 0, .2), scene, black);
     }
   };
 };
