@@ -1,11 +1,10 @@
-# P2 - Creating Music
+# P2 - Rhythmic Phasing
 
 A circular rhythm sequencer for visualizing, creating, and playing rhythms.
 
 ## Authors
 
 * **Russell Strauss**
-* **Jiewen Wang**
 
 ### Prerequisites
 
